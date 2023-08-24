@@ -32,10 +32,10 @@ form.form.form-horizontal(name="editServerForm")
         ng-model="$ctrl.server.groupId",
         required
       )
-        option(value="") Выберите группу
-        option(value="1") Группа 1
-        option(value="2") Группа 2
-        option(value="3") Группа 3
+        option(          
+            ng-repeat="group in $ctrl.groups",
+            value="{{group._id}}"
+          ) {{ group.name }} 
 
   a.btn.btn-primary.col-md-offset-4(
     ng-click="editServerForm.$invalid||$ctrl.save()"

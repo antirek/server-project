@@ -26,6 +26,12 @@ export const factoriesModule = angular
       );
     },
   ])
+  .factory("Group", [
+    "$resource",
+    function ($resource) {
+      return $resource("/groups/:id", { id: "@_id" });
+    },
+  ])
   .factory("Task", [
     "$resource",
     function ($resource) {

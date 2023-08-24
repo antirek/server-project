@@ -22,10 +22,12 @@ export const serversModule = angular
     templateUrl: "/partials/servers/edit",
     controller: [
       "Server",
+      "Group",
       "$stateParams",
       "$state",
       "NotificationService",
-      function (Server, $stateParams, $state, NotificationService) {
+      function (Server, Group, $stateParams, $state, NotificationService) {
+        this.groups = Group.query();
         if ($stateParams.id) {
           this.server = Server.get({ id: $stateParams.id });
         } else {
@@ -37,6 +39,12 @@ export const serversModule = angular
             $state.go("servers", {}, { reload: true });
           });
         };
+        this.delete = function () {
+          this.server.$delete(function () {
+            NotificationService.showSuccess("Сервер удалён");
+            $state.go("servers", {}, { reload: true });
+          });
+        };
       },
     ],
   })
@@ -44,11 +52,25 @@ export const serversModule = angular
     templateUrl: "/partials/servers/view",
     controller: [
       "Server",
+      "Group",
       "$stateParams",
+      "$state",
       "NotificationService",
       "Charts",
-      function (Server, $stateParams, NotificationService, Charts) {
+      function (
+        Server,
+        Group,
+        $stateParams,
+        $state,
+        NotificationService,
+        Charts
+      ) {
+        this.showAddBtn = false;
+        this.nameExist = false;
+        this.showMessages = true;
         this.server = Server.get({ id: $stateParams.id });
+        this.groups = Group.query();
+        this.group = new Group();
         this.charts = Charts.serverCharts({ serverId: $stateParams.id });
         this.start = function () {
           if (confirm("Вы хотите запустить сервер?")) {
@@ -70,6 +92,32 @@ export const serversModule = angular
               NotificationService.showSuccess("Сервер остановлен");
             });
           }
+        };
+        this.checkName = function () {
+          this.showMessages = !this.group.name;
+          this.showAddBtn = !!this.group.name;
+
+          if (this.group.name) {
+            this.nameExist = this.groups.some(
+              (group) => group.name === this.group.name
+            );
+            this.showAddBtn = !this.nameExist;
+          }
+        };
+        this.addGroup = function () {
+          this.group.$save(function () {
+            NotificationService.showSuccess("Группа добавлена");
+            $state.go("servers", {}, { reload: true });
+          });
+        };
+        this.removeGroup = function () {
+          this.group._id = this.groups.find(
+            (group) => group.name === this.group.name
+          )._id;
+          this.group.$delete(function () {
+            NotificationService.showSuccess("Группа удалена");
+            $state.go("servers", {}, { reload: true });
+          });
         };
       },
     ],

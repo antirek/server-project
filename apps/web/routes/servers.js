@@ -60,7 +60,7 @@ serversRouter.post("/:id", async (req, res) => {
 serversRouter.delete("/:id", async (req, res) => {
   try {
     console.log("delete servers id ", req.params.id);
-    await Server.remove({ _id: req.params.id });
+    await Server.deleteOne({ _id: req.params.id });
     res.send({ status: "ok" });
   } catch (err) {
     console.log(err);

@@ -1,0 +1,46 @@
+h5(
+   style="margin-left:10px; margin-top:10px;"
+) Доступные группы 
+ul 
+   li(
+      ng-repeat="group in $ctrl.groups",
+      ui-sref-active="active",
+   ) {{ group.name }}
+form.form.form-horizontal(
+      name="createGroupForm"
+      style="padding:15px;"
+   )
+   .form-group(
+         ng-class="{ 'has-error':createGroupForm.name.$invalid }"
+         style="padding:15px;"
+      )
+      label.control-label Введите название группы
+      input.form-control(
+         name="name", 
+         ng-model="$ctrl.group.name", 
+         ng-change="$ctrl.checkName()"
+         style="max-width:300px; margin-top:10px;"
+         value=""
+         required
+      )
+   .form-group(
+      style="display:flex; justify-content:flex-end; padding-right:15px;"
+   )         
+      a.btn.btn-default(
+         ng-if="$ctrl.showAddBtn",
+         ng-click="createGroupForm.$invalid||$ctrl.addGroup()"
+      ) Добавить группу
+      a.btn.btn-danger(
+         ng-if="$ctrl.nameExist",
+         ng-click="createGroupForm.$invalid||$ctrl.removeGroup()"
+         style="margin-left:10px;"
+      ) Удалить группу 
+p(
+   ng-if="$ctrl.showMessages",
+   style="color:green;"
+) - Для того, чтобы добавить группу введите её название!
+p(
+   ng-if="$ctrl.showMessages",
+   style="color:red;"
+) - Для того, чтобы удалить существующую группу введите её название!
+  
