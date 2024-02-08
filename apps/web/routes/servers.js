@@ -68,13 +68,31 @@ serversRouter.delete('/:id', async (req, res) => {
 });
 
 serversRouter.get('/:id/start', async (req, res) => {
+  start_server(req, res);
+});
+
+serversRouter.get('/:id/stop', async (req, res) => {
+  stop_server(req, res);
+});
+
+serversRouter.get('/:id/restart', async (req, res) => {
+  restart_server(req, res);
+});
+
+module.exports = {
+  serversRouter,
+};
+
+async function start_server(req, res) {
   try {
     console.log('get start servers id ', req.params.id);
     const server = await Server.findOne({
       _id: req.params.id,
     });
-    server.status='started';
+
+    server.status = 'started';
     await server.save();
+
     await UserAction.create({
       serverId: req.params.id,
       date: moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -86,16 +104,18 @@ serversRouter.get('/:id/start', async (req, res) => {
     console.log(err);
     res.json({});
   }
-});
+}
 
-serversRouter.get('/:id/stop', async (req, res) => {
+async function stop_server(req, res) {
   try {
     console.log('get stop servers id ', req.params.id);
     const server = await Server.findOne({
       _id: req.params.id,
     });
+
     server.status = 'stoped';
     await server.save();
+
     await UserAction.create({
       serverId: req.params.id,
       date: moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -107,8 +127,27 @@ serversRouter.get('/:id/stop', async (req, res) => {
     console.log(err);
     res.json({});
   }
-});
+}
 
-module.exports = {
-  serversRouter,
-};
+async function restart_server(req, res) {
+  try {
+    console.log('get restart servers id ', req.params.id);
+    const server = await Server.findOne({
+      _id: req.params.id,
+    });
+    
+    server.status = 'restarted';
+    await server.save();
+
+    await UserAction.create({
+      serverId: req.params.id,
+      date: moment().format('YYYY-MM-DD HH:mm:ss'),
+      user: 'Тестовый пользователь',
+      action: 'Пользователь перезапустил сервер',
+    });
+    res.json(server);
+  } catch (err) {
+    console.log(err);
+    res.json({});
+  }
+}
