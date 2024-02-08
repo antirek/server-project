@@ -1,8 +1,9 @@
 	
 const express = require('express');
 const config = require('config');
-const path = require('path');
-const favicon = require('serve-favicon');
+const favicon = require('serve-favicon'); //Зачем???
+
+const path = require('node:path');
 
 const app = express();
 app.use(express.json());
