@@ -2,6 +2,7 @@ const express = require('express');
 const moment = require('moment');
 
 const {Server, UserAction} = require('../../../models');
+const { cache } = require('webpack');
 
 const serversRouter = express.Router();
 
@@ -101,6 +102,30 @@ serversRouter.get('/:id/stop', async (req, res) => {
       date: moment().format('YYYY-MM-DD HH:mm:ss'),
       user: 'Тестовый пользователь',
       action: 'Пользователь остановил сервер',
+    });
+    res.json(server);
+  } catch (err) {
+    console.log(err);
+    res.json({});
+  }
+});
+
+serversRouter.get('/:id/restart', async (req, res) => {
+  try {
+    console.log('get restart servers id ', req.params.id);
+    const server = await Server.findOne({
+      _id: req.params.id,
+    });
+    if (server.status === 'stoped') {
+      console.log('server restart failed because server is not running');
+      res.json({});
+      return;
+    };
+    await UserAction.create({
+      serverId: req.params.id,
+      date: moment().format('YYYY-MM-DD HH:mm:ss'),
+      user: 'Тестовый пользователь',
+      action: 'Пользователь перезапустил сервер',
     });
     res.json(server);
   } catch (err) {
