@@ -7,6 +7,7 @@ export const serversModule = angular.module('servers',[])
         'NotificationService',
         function(Server, Task, NotificationService){
             this.servers = Server.query();
+            this.date = moment().format('YYYY-MM-DD');
             this.addTasks = function(){
                 if(confirm('Вы хотите добавить задания?')){
                     Task.addRandom(function(){
@@ -70,6 +71,20 @@ export const serversModule = angular.module('servers',[])
                 }
             }
     }]
+}).component('monitorView', {
+    templateUrl: '/partials/servers/monitor',
+    controller:[
+        'Charts',
+        '$stateParams',
+        function(Charts, $stateParams){
+            this.monitor = Charts.chartsMonitor({date: $stateParams.date});
+            this.date = $stateParams.date;
+            this.dateForShow = moment(this.date).format('DD.MM.YYYY');
+            this.dateFormat = function(date) {
+                if (!date) return;
+                return moment(date).format('YYYY-MM-DD');               
+            }
+        }]
 }).directive('serverUserActionTable', [
       '$compile', 'dataTableLanguage', function($compile, dataTableLanguage) {
         return {
@@ -211,6 +226,58 @@ export const serversModule = angular.module('servers',[])
                     },
                   ],
   
+                  labels: this.report.labels,
+                },
+                options: {
+                  responsive: true,
+                  legend: {
+                    display: false,
+                    position: 'left',
+                  },
+                  scales: {
+                    x: {
+                      stacked: false,
+                      beginAtZero: true,
+                    },
+                    y: {
+                      stacked: false,
+                      min: 0,
+                    },
+                  },
+                },
+  
+              };
+            };
+          }],
+      })
+      .component('tasksMonitor', {
+        templateUrl: '/partials/servers/default-chart',
+        bindings: {
+          report: '<',
+        },
+        controller: [
+          function() {
+            function getRandomColor() {
+              const letters = '0123456789ABCDEF';
+              let color = '#';
+              for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+              }
+              return color;
+            }
+            this.$onInit = function() {
+              const datasets = [];
+              this.report.servers.forEach(server => {
+                datasets.push({
+                    label: server.name,
+                    data: server.complete,
+                    backgroundColor: getRandomColor(),
+                })
+              });
+              this.chartParams = {
+                type: 'bar',
+                data: {
+                  datasets,
                   labels: this.report.labels,
                 },
                 options: {

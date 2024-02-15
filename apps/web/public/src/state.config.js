@@ -33,6 +33,11 @@ export default function stateConfig($stateProvider, $urlRouterProvider) {
         component: 'chartsMain',
       })
       .state({
+        name: 'servers.monitor',
+        url: '/charts/monitor/:date',
+        component: 'monitorView',
+      })
+      .state({
         name: 'groups',
         url: '/groups',
         component: 'groupsList',

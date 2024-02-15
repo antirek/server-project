@@ -41,6 +41,11 @@ export const factoriesModule = angular.module('factories', [])
           url: '/charts/:serverId',
           method:'get',
           isArray: false,
+        },
+        chartsMonitor: {
+          url: '/charts/monitor/:date',
+          method:'get',
+          isArray: false,         
         }
       });
     }

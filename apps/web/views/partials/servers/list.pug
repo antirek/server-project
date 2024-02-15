@@ -19,5 +19,12 @@
             ui-sref="servers.view({id:server._id})"
           )
             span {{ server.name }}
+      .panel-footer
+        .list-group
+          button.list-group-item(
+            ui-sref-active="active",
+            ui-sref="servers.monitor({date:$ctrl.date})"
+          )
+            span Монитор
   .col-md-9
     ui-view
