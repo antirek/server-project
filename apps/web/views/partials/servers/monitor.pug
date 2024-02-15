@@ -1,0 +1,18 @@
+h4 Выполненные задания ({{ $ctrl.dateForShow }})
+form.form(name="setDateForm")
+    .form-group
+        label.control-label Выбрать дату
+        input.form-control(
+            name="date", 
+            type="date", 
+            ng-value="$ctrl.date", 
+            ng-model="monitor.date",
+            required)
+    button.btn.btn-primary(
+        ui-sref-active="active",
+        ui-sref="servers.monitor({date:$ctrl.dateFormat(monitor.date) || $ctrl.date})"
+    ) Показать
+    
+
+    
+tasks-monitor(report='$ctrl.monitor.tasks' ng-if="$ctrl.monitor.$resolved")

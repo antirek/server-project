@@ -12,6 +12,11 @@ export const factoriesModule = angular.module('factories', [])
           url: '/servers/:id/start',
           method:'get',
           isArray:false,
+        },
+        restart:{
+          url: '/servers/:id/restart',
+          method:'get',
+          isArray:false,
         }
       });
     }
@@ -36,7 +41,18 @@ export const factoriesModule = angular.module('factories', [])
           url: '/charts/:serverId',
           method:'get',
           isArray: false,
+        },
+        chartsMonitor: {
+          url: '/charts/monitor/:date',
+          method:'get',
+          isArray: false,         
         }
       });
+    }
+  ])
+  .factory('Group', [
+    '$resource', 
+    function($resource) {
+      return $resource('/groups/:id', {id: '@_id'});
     }
   ])
